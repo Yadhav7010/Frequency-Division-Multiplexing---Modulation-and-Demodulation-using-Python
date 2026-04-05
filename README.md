@@ -1,14 +1,13 @@
 # SIMULATION OF FREQUENCY DIVISION MULTIPLEXING (FDM) AND DEMULTIPLEXING USING SCILAB
 ### AIM:
 
-To write a Scilab program to simulate frequency division multiplexing and demultiplexing for six different frequencies, and verify the demultiplexed outputs correspond to the original signals.
+To write a PYTHON program to simulate frequency division multiplexing and demultiplexing for six different frequencies, and verify the demultiplexed outputs correspond to the original signals.
 
 ---
 
 ### EQUIPMENTS Needed
 
-Computer with Scilab installed
-
+Computer with COLAB
 
 ---
 ### ALGORITHM
@@ -30,51 +29,58 @@ Plot original signals, multiplexed signal, and demultiplexed signals for verific
 ### PROGRAM
 
 ```
-t = linspace(0, 1, 1000);
-fs = 1000; 
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy.signal import firwin, lfilter
 
-freqs = [4, 8, 12, 16, 20, 24];
+# Time and sampling
+t = np.linspace(0, 1, 1000)
+fs = 1000  
 
-signals = zeros(6, length(t));
-for i = 1:6
-    signals(i, :) = sin(2 * %pi * freqs(i) * t);
-end
+# Frequencies
+freqs = [4, 8, 12, 16, 20, 24]
 
-fdm_signal = zeros(1, length(t));
-for i = 1:6
-    fdm_signal = fdm_signal + signals(i, :);
-end
+# Generate signals
+signals = np.zeros((6, len(t)))
+for i in range(6):
+    signals[i, :] = np.sin(2 * np.pi * freqs[i] * t)
 
-order = 50;
-cutoff_freq = 8 / (fs/2); 
-h = ffilt("lp", order, cutoff_freq);
+# FDM signal (sum of all signals)
+fdm_signal = np.sum(signals, axis=0)
 
-demux_signals = zeros(6, length(t));
-for i = 1:6
-    mixed = fdm_signal .* sin(2 * %pi * freqs(i) * t);
-    demux_signals(i, :) = filter(h, 1, mixed);
-end
+# Low-pass filter design (FIR)
+order = 50
+cutoff_freq = 8 / (fs / 2)  # normalized cutoff
+h = firwin(order + 1, cutoff_freq)
 
-scf(1);
-clf;
-for i = 1:6
-    subplot(3,2,i);
-    plot(t, signals(i, :));
-    title('Original Signal f=' + string(freqs(i)));
-end
+# Demultiplexing
+demux_signals = np.zeros((6, len(t)))
+for i in range(6):
+    mixed = fdm_signal * np.sin(2 * np.pi * freqs[i] * t)
+    demux_signals[i, :] = lfilter(h, 1.0, mixed)
 
-scf(2);
-clf;
-plot(t, fdm_signal);
-title('FDM Signal');
+# Plot original signals
+plt.figure(1)
+for i in range(6):
+    plt.subplot(3, 2, i+1)
+    plt.plot(t, signals[i, :])
+    plt.title(f'Original Signal f={freqs[i]} Hz')
+plt.tight_layout()
 
-scf(3);
-clf;
-for i = 1:6
-    subplot(3,2,i);
-    plot(t, demux_signals(i, :));
-    title('Demultiplexed Signal f=' + string(freqs(i)));
-end
+# Plot FDM signal
+plt.figure(2)
+plt.plot(t, fdm_signal)
+plt.title('FDM Signal')
+
+# Plot demultiplexed signals
+plt.figure(3)
+for i in range(6):
+    plt.subplot(3, 2, i+1)
+    plt.plot(t, demux_signals[i, :])
+    plt.title(f'Demultiplexed Signal f={freqs[i]} Hz')
+plt.tight_layout()
+
+plt.show()
 
 ```
 
