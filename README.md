@@ -103,4 +103,4 @@ plt.show()
 
 ### RESULTS:
 
-The program successfully simulates FDM and demultiplexing for multiple frequency signals with filtering to recover original signals accurately in Scilab.
+The program successfully simulates FDM and demultiplexing for multiple frequency signals with filtering to recover original signals accurately in PYTHON
