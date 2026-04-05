@@ -104,3 +104,5 @@ plt.show()
 ### RESULTS:
 
 The program successfully simulates FDM and demultiplexing for multiple frequency signals with filtering to recover original signals accurately in PYTHON
+<img width="1073" height="453" alt="image" src="https://github.com/user-attachments/assets/85234703-409c-429b-abb4-6c04a7e3f5b7" />
+
